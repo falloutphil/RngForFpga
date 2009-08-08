@@ -1,0 +1,5 @@
+
+lib Basic : [ glob *.cpp ] ;
+
+fpga-install dist : Basic : <conditional>@install-root ;
+

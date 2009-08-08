@@ -1,0 +1,15 @@
+
+# MSVC chokes if this isn't statically linked
+# Probably a __declpec issue with pure C - no lib is created.
+lib mt19937ar : mt19937ar.c : <toolset>msvc:<link>static ;
+
+fpga-install dist_mt : mt19937ar : <conditional>@install-root ;
+
+
+lib Random : [ glob *.cpp ] .//mt19937ar ../prime//Prime ;
+
+fpga-install dist_random : Random : <conditional>@install-root ;
+
+build-project test ; 
+
+

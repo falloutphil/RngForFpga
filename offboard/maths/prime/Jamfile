@@ -1,0 +1,8 @@
+
+lib Prime : [ glob *.cpp ] ../basic ../rng//mt19937ar ;
+
+fpga-install dist : Prime : <conditional>@install-root ;
+
+build-project test ;
+
+

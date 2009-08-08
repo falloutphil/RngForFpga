@@ -1,0 +1,5 @@
+
+exe TestSieveOfEratos : TestSieveOfEratos.cpp ..//Prime ;
+
+fpga-install dist : TestSieveOfEratos : <conditional>@install-root ;
+

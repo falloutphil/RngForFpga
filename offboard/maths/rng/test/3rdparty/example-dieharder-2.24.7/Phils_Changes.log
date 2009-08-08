@@ -1,0 +1,17 @@
+Search for:
+*****************************
+in the C and Makefile - so far two external libs added to the dieharder-2.24.7/dieharder/Makefile, and one #include plus new rng type allocation done on the add_ui_rngs.c file.
+
+make now takes a parameter my_build=[debug|release|profile|whatever]
+
+This tells dieharder what version of our libraries to link against.
+If it is omitted 'debug' is assumed.
+
+If your config is the same as mine you can just do a top level (RandomLibrary) make and all will be dandy, otherwise build dieharder separatly using it's autogen stuff and then edit your new dieharder-2.24.7/dieharder/Makefile as I have done.  After that, all will be dandy going forward (assuming you never re-autogen!).
+
+Directory structure of dieharder is maintained - so all current edits need to be applied to:
+dieharder-2.24.7/dieharder/<filename>
+
+Enjoy!
+
+Phil.

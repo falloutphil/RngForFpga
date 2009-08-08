@@ -1,0 +1,18 @@
+
+# Some paths defined
+# Used by offboard's install rules, etc
+path-constant TOP : . ;
+path-constant INSTALL_ROOT : $(TOP)/../bin ;
+path-constant OFFBOARD : $(TOP)/offboard ;
+
+# Compiler definition needed by all
+project . : requirements <include>$(OFFBOARD)/basic/compiler ;
+
+# GnuWin GSL installation on Windows / Fink GSL installation on Mac OS
+# Make this a requirement of all subprojects
+project . : requirements <target-os>darwin:<include>/sw/include ;
+project . : requirements <target-os>windows:<include>"C:/Program Files/GnuWin32/include" ;
+
+build-project offboard ;
+# Simon's stuff - have removed.
+# build-project fpga ;

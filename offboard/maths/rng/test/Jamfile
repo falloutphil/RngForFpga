@@ -1,0 +1,5 @@
+
+exe TestHalton : TestHalton.cpp ..//Random ..//mt19937ar ../../basic ;
+
+fpga-install dist : TestHalton : <conditional>@install-root ;
+

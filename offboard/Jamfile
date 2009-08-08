@@ -1,0 +1,104 @@
+# Tell bjam to build the next level
+build-project maths ;
+
+# All the below is required to have more control
+# over our output directory - it's tedious, but it works!
+
+# Conditional rule - used to stick all
+# the outputted targets under one directory.
+# This must be used in conjunction with fpga-install
+# rule as $(INSTALL_ROOT) cannot be seen from
+# inside the class at runtime, thus we use
+# this rule to pass to the base install directory
+# and this is then modified by our fpga-install-target-class.
+# NOTE: We can't just test the properties passed in here
+#       because each Jamfile is only read once per bjam and more than
+#       one compiler or variant can be specified.  Thus
+#       the my-install-target-class gives us a level of
+#       indirection to achieve our goal.  An arse, I know.
+rule install-root ( properties * )
+{
+	return "<location>$(INSTALL_ROOT)" ;
+}
+
+# Specialisation of install rule in BB's stage file
+rule fpga-install ( name : sources * : requirements * : default-build * )
+{
+    import "class" : new ;
+    import targets ;
+  
+    local project = [ project.current ] ;
+    
+    # Unless the user has explicitly asked us to hardcode dll paths, add
+    # <hardcode-dll-paths>false in requirements, to override default
+    # value.
+    if ! <hardcode-dll-paths>true in $(requirements)
+    {
+        requirements += <hardcode-dll-paths>false ;
+    }
+       
+    if <tag> in $(requirements:G)
+    {
+        errors.user-error 
+          "The <tag> property is not allowed for the 'install' rule" ;
+    }
+    
+    # Instantiate with our new class below, 
+    # rather than the default install-target-class       
+    targets.main-target-alternative
+      [ new fpga-install-target-class $(name) : $(project) 
+        : [ targets.main-target-sources $(sources) : $(name) ]
+        : [ targets.main-target-requirements $(requirements) : $(project) ] 
+        : [ targets.main-target-default-build $(default-build) : $(project) ] 
+      ] ;
+}
+
+class fpga-install-target-class : install-target-class 
+{
+    import regex ;
+    
+    rule __init__ ( name-and-dir : project : sources * : requirements * : default-build * )
+    {
+        # Call our parent - the original BB class
+        install-target-class.__init__ $(name-and-dir) : $(project) : $(sources) : $(requirements) 
+          : $(default-build) ;
+    }
+
+    # Specialised to add os_toolset_variant directory to
+    # our install root
+    rule update-location ( property-set )
+    {
+        # Inside the class we can finally get
+        # at the per-target specs we need.
+     	
+     	# Original location given by install_rule
+     	# we must update this and then then replace the old value
+        local loc = [ $(property-set).get <location> ] ;
+        
+        # Target keys for our new directory
+        local targetOs = [ $(property-set).get <target-os> ] ;
+        # OS and Compiler name are the same on the Mac
+        # - this is annoying so add a little workaround
+        if $(targetOs) = "darwin" { targetOs = "macosx" ; } 
+        local toolset = [ $(property-set).get <toolset> ] ;
+        local variant = [ $(property-set).get <variant> ] ;
+        # Our new directory
+        local build = "$(targetOs)_$(toolset)_$(variant)" ;
+		# Concatenate it to our root passed in
+		local new_loc = [ path.root $(build) $(loc) ] ;
+		
+		# Windows use of '\' means we must escape
+		# Regex to find any list item that is [anything]$(loc)[anything]
+		# - we could perhaps make this a bit more exacting!
+		local matchStr = [ regex.escape "\S*$(loc)\S*" : "\\" : "\\\\" ] ;
+		
+		# Can't think of a quicker way to do this - BB doesn't
+		# seem to have a 'replace' function, so just regex the
+		# whole property set as a list and store the result
+		local newPropertyList = [ regex.replace-list [ $(property-set).raw ] : $(matchStr) : $(new_loc) ] ;
+		
+		# Create a new property set from out regex result
+    	return [ property-set.create $(newPropertyList) ] ;
+    }       
+}
+
