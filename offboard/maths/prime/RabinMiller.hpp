@@ -13,7 +13,14 @@
 
 #include "definitions.h"
 
-DLLEXPORT bool isPseudoPrime( const unsigned int n, const unsigned int numberOfTests = 100 );
+namespace offboard { namespace maths { namespace prime {
+
+
+DLLEXPORT bool isPseudoPrime( const unsigned int n, const unsigned int numberOfTests );
+// Simple single argument pass through for use with PassFailAccumulator
+DLLEXPORT bool isPseudoPrime( const unsigned int& n );
+
+} } } // namespace
 
 #endif //RABINMILLER_HPP
 

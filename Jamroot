@@ -13,6 +13,9 @@ project . : requirements <include>$(OFFBOARD)/basic/compiler ;
 project . : requirements <target-os>darwin:<include>/sw/include ;
 project . : requirements <target-os>windows:<include>"C:/Program Files/GnuWin32/include" ;
 
+# Windows Default Boost 1.35 installation
+project . : requirements <target-os>windows:<include>"C:/Program Files/boost/boost_1_35_0" ;
+
 build-project offboard ;
-# Simon's stuff - have removed.
+# Removed Simon's stuff - no need to keep it here!
 # build-project fpga ;

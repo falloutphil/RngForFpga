@@ -7,6 +7,8 @@
 
 #include "Halton.hpp"
 
+namespace offboard { namespace maths { namespace rng {
+
 // Numpty 1D implementation of Halton - is compatible with GSL tho!
 class VanDerCorput : protected Halton
 {
@@ -20,5 +22,6 @@ class VanDerCorput : protected Halton
 		DLLEXPORT double get_double() const { return getDouble(); }
 };
 
+} } } //namespace
 
 #endif /*VANDERCORPUT_HPP_*/

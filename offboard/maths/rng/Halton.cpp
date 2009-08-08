@@ -3,6 +3,11 @@
 
 #include "Halton.hpp"
 
+using namespace offboard::maths::prime;
+
+namespace offboard { namespace maths { namespace rng {
+
+
 Halton::Halton( const unsigned long start_n, const unsigned int _dimensions ) :
 	                                      n( start_n ),
                                           dimensions( _dimensions ),
@@ -37,7 +42,8 @@ std::vector<double> Halton::getUniformVector() const
 	// used in more than, say, 15 dimensions, so
 	// passing a local back by value is no bad
 	// thing here!
-	std::vector<double> resultVector( dimensions );
+	std::vector<double> resultVector;
+	resultVector.reserve( dimensions );
 
 	// We need a U[0,1] for each dimension
 	for ( ++n, i=0; i < dimensions; ++i )
@@ -54,16 +60,18 @@ std::vector<double> Halton::getUniformVector() const
 			// this will pop the base-b number out
 			// in reverse order to the MSB is raised
 			// to the smallest value of k in 1/(b^k)
-			// h is a summation of all our MODs multipled
+			// h is a summation of all our MODs multiplied
 			// by b^-k.
 			h += ( k % b ) * f;
 		}
 
-		resultVector[i] = h;
+		resultVector.push_back(h);
 	}
 
 	return resultVector;
 }
+
+} } } //namespace
 
 
 

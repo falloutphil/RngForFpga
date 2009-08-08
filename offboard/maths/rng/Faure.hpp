@@ -7,6 +7,8 @@
 
 #include "Random.hpp"
 
+namespace offboard { namespace maths { namespace rng {
+
 // Faure Quasi-Random sequence
 class Faure : public Random
 {
@@ -37,10 +39,17 @@ class Faure : public Random
 		// a change to the object state, rather than implying
 		// one due to the nature of the algorithm.  Feel
 		// free to argue this with me if you disagree!
+		const unsigned int base;
 		mutable unsigned int n;
 		const unsigned int dimensions;
-		const unsigned int base;
-
+		// Again these are internal variables
+		// NOTE: They are stateless, declaring them
+		// here just means there is only one alloc/dealloc
+		// per object.
+		mutable unsigned int k, m, myC_k;
+		mutable double myRandom, primePower;
 };
+
+} } } // namespace
 
 #endif /*FAURE_HPP_*/

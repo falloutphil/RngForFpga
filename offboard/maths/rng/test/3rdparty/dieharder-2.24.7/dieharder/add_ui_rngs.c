@@ -64,5 +64,9 @@ void add_ui_rngs()
  types[i] = ( get_gsl_rng_vandercorput() );
  if(verbose) printf("# add_my_types():  Added type %d = %s\n",i,types[i]->name);
  i++;
+ // ***************************** Simon's Ran Vector attempt *********************************
+ types[i] = ( get_gsl_rng_ranvec() );
+ if(verbose) printf("# add_my_types():  Added type %d = %s\n",i,types[i]->name);
+ i++;
 
 }

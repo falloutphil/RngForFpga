@@ -13,6 +13,8 @@
 
 #include <vector>
 
+namespace offboard { namespace maths { namespace prime {
+
 // Note on return types:
 // There is a case for returning by value here since we are
 // returning a newly created object.  The potential size
@@ -34,6 +36,8 @@ DLLEXPORT std::vector<unsigned int>* FirstNEratosPrimes( const unsigned int numb
 DLLEXPORT std::vector<unsigned int>* EratosPrimesUpTo( const unsigned int maxValue );
 // Next Prime - helper function used in Faure sequence
 DLLEXPORT unsigned int NextPrimeGreaterOrEqualTo( const unsigned int number );
+
+} } } //namespace
 
 #endif //SIEVEOFERATOSTHENES_HPP
 

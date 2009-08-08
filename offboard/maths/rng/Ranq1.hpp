@@ -5,6 +5,9 @@
 
 #include "Random.hpp"
 
+namespace offboard { namespace maths { namespace rng {
+
+
 // NRCs Ranq1 RNG as an example
 class Ranq1 : public Random
 {
@@ -27,6 +30,8 @@ class Ranq1 : public Random
 
 
 };
+
+} } } //namespace
 
 #endif //RANQ1_HPP
 

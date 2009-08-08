@@ -8,6 +8,17 @@
 
 #include "RabinMiller.hpp"
 
+using namespace offboard::maths::basic;
+
+namespace offboard { namespace maths { namespace prime {
+
+
+// Simple single argument pass through for use with PassFailAccumulator
+bool isPseudoPrime( const unsigned int& n )
+{
+	// 500 RM tests is more than enough!
+	return isPseudoPrime( n, 500 );
+}
 
 // To Do:  Do that mod 60 test thingy.
 // n is the candidate number
@@ -72,4 +83,6 @@ bool isPseudoPrime( const unsigned int n, const unsigned int numberOfTests )
 	return true;
 
 }
+
+} } } //namespace
 

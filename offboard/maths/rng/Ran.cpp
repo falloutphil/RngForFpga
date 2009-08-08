@@ -2,6 +2,9 @@
 
 // Implementation of NRC's top quality RNG - Ran
 
+namespace offboard { namespace maths { namespace rng {
+
+
 Ran::Ran( const unsigned long long j ) : v(4101842887655102017LL), w(1)
 {
 	u = j ^ v; int64();
@@ -27,4 +30,6 @@ unsigned int Ran::int32() const
 {
 	return static_cast<unsigned int> ( int64() );
 }
+
+} } } //namespace
 

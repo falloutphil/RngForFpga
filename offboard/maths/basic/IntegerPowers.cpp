@@ -1,6 +1,8 @@
 
 #include "IntegerPowers.hpp"
 
+namespace offboard { namespace maths { namespace basic {
+
 
 // Don't use this for mod calculations - the numbers get too large
 // and the returned value cannot be correctly mod-ed - see powAndMod below
@@ -60,4 +62,5 @@ unsigned int powAndMod(const unsigned int base, unsigned int exp, const unsigned
 
 }
 
+} } } //namespace
 

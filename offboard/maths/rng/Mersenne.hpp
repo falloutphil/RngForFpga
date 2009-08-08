@@ -3,6 +3,8 @@
 
 #include "Random.hpp"
 
+namespace offboard { namespace maths { namespace rng {
+
 // NRCs Ranq1 RNG as an example
 class Mersenne : public Random
 {
@@ -19,6 +21,8 @@ class Mersenne : public Random
 		double get_double() const { return getDouble(); }
 
 };
+
+} } } // namespace
 
 #endif //MERSENNE_HPP
 

@@ -1,5 +1,8 @@
 #include "Ranq1.hpp"
 
+namespace offboard { namespace maths { namespace rng {
+
+
 // Implementation of NRC's everyday RNG - Ranq1
 
 Ranq1::Ranq1( const unsigned long long j ) : v(4101842887655102017LL)
@@ -25,4 +28,6 @@ unsigned int Ranq1::int32() const
 {
 	return static_cast<unsigned int> ( int64() );
 }
+
+} } } //namespace
 

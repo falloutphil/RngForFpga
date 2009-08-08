@@ -6,9 +6,10 @@ lib mt19937ar : mt19937ar.c : <toolset>msvc:<link>static ;
 fpga-install dist_mt : mt19937ar : <conditional>@install-root ;
 
 
-lib Random : [ glob *.cpp ] .//mt19937ar ../prime//Prime ;
+lib Random : [ glob *.cpp ] .//mt19937ar ../prime//Prime ../basic ;
 
 fpga-install dist_random : Random : <conditional>@install-root ;
+
 
 build-project test ; 
 

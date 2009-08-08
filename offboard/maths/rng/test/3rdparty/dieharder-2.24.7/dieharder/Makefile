@@ -100,7 +100,7 @@ LIBOBJS =
 ifndef my_build
 	my_build = debug
 endif
-LIBS = -L ../libdieharder -L ../../../../../../../bin/${my_build} -ldieharder -lgsl -lgslcblas -lm -lmt19937ar -lRandom -lPrime -lBasic
+LIBS = -L ../libdieharder -L ../../../../../../../../bin/linux_gcc_${my_build} -ldieharder -lgsl -lgslcblas -lm -lmt19937ar -lRandom -lPrime -lBasic
 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s

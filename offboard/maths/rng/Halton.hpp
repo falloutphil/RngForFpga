@@ -7,6 +7,9 @@
 
 #include "Random.hpp"
 
+namespace offboard { namespace maths { namespace rng {
+
+
 // Halton Quasi-Random sequence
 class Halton : public Random
 {
@@ -31,6 +34,8 @@ class Halton : public Random
 
 
 };
+
+} } } //namespace
 
 #endif //HALTON_HPP
 

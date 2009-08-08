@@ -17,7 +17,7 @@
 
 // As C can't link against templates this means (until I can think
 // of a better way) that for each new child of our Random class
-// you have to add a new C accessor interface, with a tedious 
+// you have to add a new C accessor interface, with a tedious
 // one-liner implementation in C_Interface.cpp - still the framework
 // as it is takes 95% of the donkey-work out of the equation....
 
@@ -39,6 +39,8 @@ DLLEXPORT const gsl_rng_type* get_gsl_rng_mersenne();
 DLLEXPORT const gsl_rng_type* get_gsl_rng_ran();
 // VanDerCorput class
 DLLEXPORT const gsl_rng_type* get_gsl_rng_vandercorput();
+// RanVec class
+DLLEXPORT const gsl_rng_type* get_gsl_rng_ranvec();
 
 #ifdef __cplusplus
 }

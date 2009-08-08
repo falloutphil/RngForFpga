@@ -4,7 +4,7 @@ build-project maths ;
 # All the below is required to have more control
 # over our output directory - it's tedious, but it works!
 
-# Conditional rule - used to stick all
+# Conditional rule - used to put all
 # the outputted targets under one directory.
 # This must be used in conjunction with fpga-install
 # rule as $(INSTALL_ROOT) cannot be seen from

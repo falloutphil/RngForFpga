@@ -9,6 +9,9 @@
 #include "Mersenne.hpp"
 #include "Ran.hpp"
 #include "VanDerCorput.hpp"
+#include "RanVec.hpp"
+
+using namespace offboard::maths::rng;
 
 // Ranq1 class
 extern "C" const gsl_rng_type* get_gsl_rng_ranq1()
@@ -28,8 +31,14 @@ extern "C" const gsl_rng_type* get_gsl_rng_ran()
 	return getGslRngFromRandomClass<Ran>();
 }
 
-// Ran class
+// VanDerCorput class
 extern "C" const gsl_rng_type* get_gsl_rng_vandercorput()
 {
 	return getGslRngFromRandomClass<VanDerCorput>();
+}
+
+// Simon's Ran Vector class
+extern "C" const gsl_rng_type* get_gsl_rng_ranvec()
+{
+	return getGslRngFromRandomClass<RanVec>();
 }

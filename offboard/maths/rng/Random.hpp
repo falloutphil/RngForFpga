@@ -12,6 +12,8 @@
 
 #include <gsl/gsl_rng.h>
 
+namespace offboard { namespace maths { namespace rng {
+
 class Random
 {
 	public:
@@ -19,7 +21,7 @@ class Random
 		//virtual double getDouble() = 0;
 	protected:
 		Random() {};
-		
+
 };
 
 // This is the 'meat' of the CPP interface INTO GSL.
@@ -40,7 +42,7 @@ class Random
 // either, but it doesn't have to, as templates
 // are resolved at COMPILE time.
 
-// First we define all the functions we will 
+// First we define all the functions we will
 // need for our rng_gsl_type structure.
 // Finally we define a factory that will
 // create the in a nice generic way.
@@ -56,7 +58,7 @@ void rngSet( void* mem, unsigned long int seed )
 	//We just let out reference myRng die at the end of the function,
 	//but don't worry, GSL will clean up for us and we will be passed
 	//back the same peice of memory with every subsequent call.
-	
+
 	/* MY_RNG_CLASS* myRng = */ (void) new (mem) MY_RNG_CLASS(seed);
 }
 
@@ -95,21 +97,21 @@ const gsl_rng_type* getGslRngFromRandomClass()
 	// once (per template type, in effect) and
 	// from then on return a reference to it whenever
 	// asked.  This way C++ cleans up for us!
-	
+
 	// Handle GCC's typeinfo with strpbrk (see Google)
-	static const std::string rngName = std::string("C++ RNG - ").append( 
+	static const std::string rngName = std::string("C++ - ").append(
                 	strpbrk( typeid(MY_RNG_CLASS).name(),
                         	 "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV WXYZ" )
                 );
-	
+
 	// The actual struct we pass to GSL
 	static const gsl_rng_type gsl_rng_myRandomType =
 	{
-		rngName.c_str(),	
-		//GSL can't use our 64-bit implementation max 
-		//is that returned by our int32()		
-		std::numeric_limits<unsigned int>::max(),			    
-		0,			
+		rngName.c_str(),
+		//GSL can't use our 64-bit implementation max
+		//is that returned by our int32()
+		std::numeric_limits<unsigned int>::max(),
+		0,
 		sizeof(MY_RNG_CLASS),
 		&rngSet<MY_RNG_CLASS>,
 		&rngGet<MY_RNG_CLASS>,
@@ -118,6 +120,7 @@ const gsl_rng_type* getGslRngFromRandomClass()
 	return &gsl_rng_myRandomType;
 }
 
+} } } //namespace
 
 #endif //RANDOM_HPP
 

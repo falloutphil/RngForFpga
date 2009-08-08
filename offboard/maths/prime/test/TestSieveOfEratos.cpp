@@ -2,109 +2,73 @@
 #include <iostream>
 #include <numeric>
 
+#include <boost/assign/list_of.hpp>
+
+#include "../../../basic/stl/algorithms.hpp"
+
 #include "../SieveOfEratosthenes.hpp"
 #include "../RabinMiller.hpp"
 
-unsigned int PrimalityResult( unsigned int failsSoFar, unsigned int primeCandidate )
+using namespace std;
+using namespace boost::assign;
+using namespace offboard::basic;
+using namespace offboard::maths::prime;
+
+inline unsigned int PrimalityTest( const vector<unsigned int>& primeCandidates )
 {
-	std::cout << "\nPrimality Testing " << primeCandidate << " .... ";
-	if ( isPseudoPrime( primeCandidate, 500 ) )
-		std::cout << "OK";
-	else
-	{
-		std::cout << "FAILURE - Rabin Miller disagrees over primality";
-		++failsSoFar;
-	}
-	return failsSoFar;
+	return accumulate( primeCandidates.begin(),
+			           primeCandidates.end(), 0,
+			           PassFailAccumulator<unsigned int>( &isPseudoPrime ) );
 }
-
-
-unsigned int PrimalityTest( const std::vector<unsigned int>* const primeCandidates )
-{
-	return std::accumulate( primeCandidates->begin(), primeCandidates->end(), 0, PrimalityResult );
-}
-
-
 
 
 int main(int argc, char *argv[])
 {
 	unsigned int totalFails = 0;
 	unsigned int testFails = 0;
-	// Some random definately-not prime values to self test Rabin Miller
-	const unsigned int notPrime[] = { 0, 1, 4, 6, 8, 9, 10, 12, 14, 15, 16, 7917, 86633, 104727, 179424669 };
-
 
 	// *************** isPseudoPrime Self Tests ***************
+	// Some random definitely-not prime values to self test Rabin Miller
+	const vector< unsigned int > notPrime = list_of(0)(1)(4)(6)(8)(9)(10)(12)(14)(15)(16)(7917)(86633)(104727)(179424669);
+	cout << "\n\nSelf-Test - the following values should fail our Rabin Miller test ....";
+	totalFails += notPrime.size() - PrimalityTest( notPrime );
 
-	std::cout << "\n\nSelf-Test - the following values should fail our Rabin Miller test ....";
-	for ( unsigned int i = 0; i < sizeof(notPrime)/sizeof(notPrime[0]); ++i )
-	{
-		std::cout << "\nPrimality Testing " << notPrime[i] << " .... ";
-		// Make number of R-M test large (100000) so chance of
-		// spurious failure is very small.
-		if ( isPseudoPrime( notPrime[i], 100000 ) )
-		{
-			std::cout << "FAILURE - Rabin Miller thinks this is prime - rerun the test in case Rabin is wrong (i.e. it's pseudoprime)!";
-			++totalFails;
-		}
-		else
-			std::cout << "OK";
-	}
-
-
-	// *************** FristNEratosPrimes Tests ***************
-
-	std::cout << "\n\nTesting FristNEratosPrimes...";
-	unsigned int requestedNumberOfPrimes = 1000000;
-
-	// First N primes test
-	std::cout << "\n\nAsk for the first " << requestedNumberOfPrimes << " primes";
-	const std::vector<unsigned int>* const primes = FirstNEratosPrimes( requestedNumberOfPrimes );
-	const unsigned int returnedNumberOfPrimes = primes->size();
-	std::cout << "\nFirstNEratosPrimes returned " << returnedNumberOfPrimes << " .... ";
+	// *************** FristNEratosPrimes Correct Number Returned ***************
+	cout << "\n\nTesting FristNEratosPrimes...";
+	const unsigned int requestedNumberOfPrimes = 1000000;
+	cout << "\n\nAsk for the first " << requestedNumberOfPrimes << " primes";
+	const auto_ptr< const vector<unsigned int> >
+		firstNPrimes( FirstNEratosPrimes( requestedNumberOfPrimes ) );
+	const unsigned int returnedNumberOfPrimes = firstNPrimes->size();
+	cout << "\nFirstNEratosPrimes returned " << returnedNumberOfPrimes << " .... ";
 	if ( requestedNumberOfPrimes == returnedNumberOfPrimes )
-		std::cout << "OK";
+		cout << "OK";
 	else
 	{
-		std::cout << "FAILURE - Incorrect number of primes returned";
+		cout << "FAILURE - Incorrect number of primes returned";
 		++totalFails;
 	}
 
-	// Primes agree with EratosPrimesUpTo function
-	std::cout << "\n\nCompare output to EratosPrimesUpTo, using last value returned from FristNEratosPrimes .... ";
-	const std::vector<unsigned int>* const primes2 = EratosPrimesUpTo( primes->back() );
-	if ( *primes == *primes2 )
-		std::cout << "OK";
+	// *************** Equivalence Test For Two Prime Functions ***************
+	cout << "\n\nCompare output to EratosPrimesUpTo, using last value returned from FristNEratosPrimes .... ";
+	const auto_ptr< const vector<unsigned int> >
+		primesUpToLastFirstN ( EratosPrimesUpTo( firstNPrimes->back() ) );
+	if ( *firstNPrimes == *primesUpToLastFirstN )
+		cout << "OK";
 	else
 	{
-		std::cout << "FAILURE - EratosPrimesUpTo() returned different vector to FristNEratosPrimes()";
+		cout << "FAILURE - EratosPrimesUpTo() returned different vector to FristNEratosPrimes()";
 		++totalFails;
 	}
 
-
-	// Primality test
-	std::cout << "\n";
-	testFails = PrimalityTest( primes );
+	// *************** Actual Primality Test Of Returned Values ***************
+	// Assuming above test has passed only need to
+	// to test one array - as both methods (should) have returned the same primes!
+	cout << "\n";
+	testFails = PrimalityTest( *firstNPrimes );
 	totalFails += testFails;
-	std::cout << "\n\n" << testFails << " failures detected.\n";
+	cout << "\n\n" << testFails << " failures detected.\n";
 
-	// *************** EratosPrimesUpTo Tests ***s************
-
-	// Primality test - getting maximum number of primes
-	//std::numeric_limits<unsigned int>::max() - 1; // - Not on my poxy laptop!
-	//requestedNumberOfPrimes = 50000000;
-	//std::cout << "\n\nTesting EratosPrimesUpTo for all primes up to " << requestedNumberOfPrimes << " (should be int(max) or max reccomended use of this sieve, but I don't have the memory!) ...";
-	//const std::vector<unsigned int>* const primes3 = EratosPrimesUpTo( requestedNumberOfPrimes );
-	//std::cout << "\n";
-	//testFails = PrimalityTest( primes3 );
-	//totalFails += testFails;
-	//std::cout << "\n\n" << testFails << " failures detected.\n";
-
-	std::cout << "\n\n\n\n**** " << totalFails << " total failures detected ****\n\n";
-	//clean up
-	delete primes;
-	delete primes2;
-	//delete primes3;
+	cout << "\n\n\n\n**** " << totalFails << " total failures detected ****\n\n";
 	return 0;
 }
